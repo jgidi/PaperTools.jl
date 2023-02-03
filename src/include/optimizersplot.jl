@@ -1,8 +1,5 @@
 export optimizersplot
 
-using Plots; pyplot()
-using Colors: distinguishable_colors
-using Statistics
 
 get_quantile(A::AbstractArray, p; dims) = mapslices(x->quantile(x, p), A, dims=dims)
 squeeze(A) = reshape(A, Tuple(i for i in size(A) if i != 1))
