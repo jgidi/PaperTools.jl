@@ -14,7 +14,8 @@ function get_statistics(data, estimator=:median)
         )
     elseif estimator == :mean
         fcentral = mean(data, dims = 2)  |> squeeze
-        area = std(data, dims = 2) |> squeeze
+        dispersion = std(data, dims = 2) |> squeeze
+        area = (fcentral - dispersion, fcentral + dispersion)
     else
         throw("Please, provide 'estimator = :median' or 'estimator = :mean'")
     end
@@ -34,7 +35,7 @@ function build_subplot(data_dict, estimator)
               # xlims=(0, (length(fc)-1)),
               xlims=(1, length(fc)),
               linewidth = 2,
-              ribbon=area,
+              fillrange=area,
               label=key,
               color=colors[i+=1],
               )
