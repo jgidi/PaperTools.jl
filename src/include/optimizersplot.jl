@@ -36,6 +36,7 @@ function build_subplot(data_dict, estimator)
               xlims=(1, length(fc)),
               linewidth = 2,
               fillrange=area,
+              fillalpha=0.5,
               label=key,
               color=colors[i+=1],
               )
