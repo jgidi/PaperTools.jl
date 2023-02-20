@@ -26,7 +26,9 @@ end
 function build_subplot(data_dict, estimator)
     p = plot()
     N = length(data_dict)
-    colors = distinguishable_colors(N)
+
+    seed = [RGB(1, 1, 1)] # Avoid colors close to white
+    colors = distinguishable_colors(N, seed, dropseed=true)
     i = 0
     for (key, val) in data_dict
         fc, area = get_statistics(val, estimator)
@@ -36,7 +38,7 @@ function build_subplot(data_dict, estimator)
               xlims=(1, length(fc)),
               linewidth = 2,
               fillrange=area,
-              fillalpha=0.5,
+              fillalpha=0.4,
               label=key,
               color=colors[i+=1],
               )
