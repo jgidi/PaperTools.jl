@@ -7,25 +7,34 @@ using OrderedCollections
 # values are defined.
 # The data must be a matrix with shape (Niterations, Nruns)
 
+
+# Make up some data to plot
+function fake_data(Niters, Nruns)
+    decay_rate = 0.1rand()
+    random_data = 0.4rand(Niters, Nruns)
+    return exp.(random_data .- decay_rate*(1:Niters))
+end
+
+
 sp1 = OrderedDict(
-    "SPSA" => rand(50, 10),
-    "CSPSA" => rand(50, 10),
+    "SPSA" => fake_data(50, 10),
+    "CSPSA" => fake_data(50, 10),
 )
 
 sp2 = OrderedDict(
-    "SPSA2" => rand(50, 10),
-    "CSPSA2" => rand(50, 10),
-    "CSPSA2 full" => rand(50, 10),
-    "CSPSA2 scalar" => rand(50, 10),
-    "CSPSA2 otro" => rand(50, 10),
+    "SPSA2" => fake_data(50, 10),
+    "CSPSA2" => fake_data(50, 10),
+    "CSPSA2 full" => fake_data(50, 10),
+    "CSPSA2 scalar" => fake_data(50, 10),
+    "CSPSA2 otro" => fake_data(50, 10),
 )
 
 sp3 = OrderedDict(
-    "SPSA QN" => rand(50, 10),
-    "CSPSA QN" => rand(50, 10),
-    "CSPSA otro QN " => rand(50, 10),
-    "CSPSA QN scalar" => rand(50, 10),
-    "SPSA QN scalar" => rand(50, 10),
+    "SPSA QN" => fake_data(50, 10),
+    "CSPSA QN" => fake_data(50, 10),
+    "CSPSA otro QN " => fake_data(50, 10),
+    "CSPSA QN scalar" => fake_data(50, 10),
+    "SPSA QN scalar" => fake_data(50, 10),
 )
 
 # 'estimator' may be:
