@@ -32,6 +32,10 @@ function build_subplot(data_dict, estimator)
     i = 0
     for (key, val) in data_dict
         fc, area = get_statistics(val, estimator)
+
+        # Mask negative ribbon values
+        @. area[1][@. area[1] < eps() ] = eps()
+
         # plot!(p, 0:(length(fc)-1), fc,
         plot!(p, fc,
               # xlims=(0, (length(fc)-1)),
