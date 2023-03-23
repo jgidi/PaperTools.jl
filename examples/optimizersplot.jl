@@ -43,6 +43,7 @@ sp3 = OrderedDict(
 p = optimizersplot(sp1, sp2, sp3,
                    estimator = :mean,
                    ylabel = "Cost",
+                   yscale = :log10,
                    )
 
 savefig(p, "example_plot.pdf")
