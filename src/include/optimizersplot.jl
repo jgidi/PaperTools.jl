@@ -38,9 +38,8 @@ function build_subplot(data_dict, estimator)
 
         # plot!(p, 0:(length(fc)-1), fc,
         plot!(p, fc,
-              # xlims=(0, (length(fc)-1)),
               xlims=(1, length(fc)),
-              linewidth = 2,
+              linewidth=2,
               fillrange=area,
               fillalpha=0.4,
               label=key,
