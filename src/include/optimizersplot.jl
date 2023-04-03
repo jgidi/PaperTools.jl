@@ -23,7 +23,7 @@ function get_statistics(data, estimator=:median)
     return fcentral, area
 end
 
-function build_subplot(data_dict, estimator)
+function build_subplot(data_dict, estimator, masknegatives)
     p = plot()
     N = length(data_dict)
 
@@ -34,7 +34,9 @@ function build_subplot(data_dict, estimator)
         fc, area = get_statistics(val, estimator)
 
         # Mask negative ribbon values
-        @. area[1][@. area[1] < eps() ] = eps()
+        if masknegatives
+            @. area[1][@. area[1] < eps() ] = eps()
+        end
 
         # plot!(p, 0:(length(fc)-1), fc,
         plot!(p, fc,
@@ -54,9 +56,10 @@ function optimizersplot(data_dicts...;
                         estimator = :median,
                         ylabel = "Cost",
                         title = ["First order" "Second order" "Quantum Natural"],
+                        masknegatives = false,
                         kwargs...)
 
-    subplots = build_subplot.(data_dicts, estimator)
+    subplots = build_subplot.(data_dicts, estimator, masknegatives)
 
     plot!(subplots[1], ylabel=ylabel)
     for sp in subplots[2:end]
