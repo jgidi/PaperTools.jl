@@ -40,8 +40,9 @@ sp3 = OrderedDict(
 # 'estimator' may be:
 # :mean (showing dispersion as standard deviation)
 # :median (showing dispersion as interquartile range)
+# :both (show 2 rows: :mean on top and :median on bottom)
 p = optimizersplot(sp1, sp2, sp3,
-                   estimator = :mean,
+                   estimator = :both,
                    ylabel = "Cost",
                    yscale = :log10,
                    )

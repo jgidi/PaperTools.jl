@@ -53,30 +53,57 @@ function build_subplot(data_dict, estimator, masknegatives)
 end
 
 function optimizersplot(data_dicts...;
-                        estimator = :median,
+                        estimator = :both,
+                        xlabel = "Iterations",
                         ylabel = "Cost",
                         title = ["First order" "Second order" "Quantum Natural"],
                         masknegatives = false,
                         kwargs...)
 
-    subplots = build_subplot.(data_dicts, estimator, masknegatives)
 
-    plot!(subplots[1], ylabel=ylabel)
-    for sp in subplots[2:end]
-        plot!(sp,
-              yformatter=_->"",
-              # left_margin  = -4Plots.mm,
-              )
+    if estimator == :both
+        subp_mean   = build_subplot.(data_dicts, :mean, masknegatives)   |> collect
+        subp_median = build_subplot.(data_dicts, :median, masknegatives) |> collect
+
+        # Make Nx2 matrix of plots
+        subplots = hcat(subp_mean, subp_median)
+
+        # Other params
+        figsize  = (1200, 600)
+
+        # Anotate estimators
+        plot!(subplots[1, 1], ylabel = ylabel*" (mean)")
+        plot!(subplots[1, 2], ylabel = ylabel*" (median)")
+    else
+        # Make Nx1 matrix of plots
+        subplots = build_subplot.(data_dicts, estimator, masknegatives) |> collect
+        subplots = reshape(subplots, :, 1)
+
+        # Other params
+        figsize  = (1200, 400)
+
+        # Annotate estimator
+        plot!(subplots[1, 1], ylabel = ylabel*" ($(string(estimator)))")
+    end
+
+    # Y Labels and ticks on leftmost subplots only
+    plot!.(subplots[2:end, :], yformatter=_->"")
+
+    # X labels and ticks on the last row only
+    plot!.(subplots, xformatter=_->"")
+    plot!.(subplots[:, end], xformatter=:auto, xlabel=xlabel)
+
+    # Titles
+    for (i, sp) in enumerate(subplots[:, 1])
+        plot!(sp, title=title[i])
     end
 
     return plot(subplots...;
-                layout = (1, length(subplots)), # Make horizontal
-                xlabel = "Iterations",
-                # fontfamily = "serif-roman",
-                title = title,
-                thickness_scaling=1.3,
-                # bottom_margin=2Plots.mm,
-                size = (1200, 400),
+                layout = reverse(size(subplots)),
+                thickness_scaling = 1.3,
+                size = figsize,
+                tickfontsize = 12,
+                guidefontsize = 12,
                 grid = true,
                 framestyle = :box,
                 link = :y,
