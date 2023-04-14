@@ -3,7 +3,7 @@ export optimizersplot
 get_quantile(A::AbstractArray, p; dims) = mapslices(x->quantile(x, p), A, dims=dims)
 squeeze(A) = reshape(A, Tuple(i for i in size(A) if i != 1))
 
-function get_statistics(data, estimator=:median)
+function get_statistics(data, estimator=:median, masknegatives=false)
 
 
     if estimator == :median
@@ -15,7 +15,13 @@ function get_statistics(data, estimator=:median)
     elseif estimator == :mean
         fcentral = mean(data, dims = 2)  |> squeeze
         dispersion = std(data, dims = 2) |> squeeze
-        area = (fcentral - dispersion, fcentral + dispersion)
+
+        lower = fcentral - dispersion
+        upper = fcentral + dispersion
+        if masknegatives & any(lower .< 0)
+            lower = fcentral # fcentral - dispersion is negative
+        end
+        area = (lower, upper)
     else
         throw("Please, provide 'estimator = :median' or 'estimator = :mean'")
     end
@@ -31,12 +37,12 @@ function build_subplot(data_dict, estimator, masknegatives)
     colors = distinguishable_colors(N, seed, dropseed=true)
     i = 0
     for (key, val) in data_dict
-        fc, area = get_statistics(val, estimator)
+        fc, area = get_statistics(val, estimator, masknegatives)
 
-        # Mask negative ribbon values
-        if masknegatives
-            @. area[1][@. area[1] < eps() ] = eps()
-        end
+        # # Mask negative ribbon values
+        # if masknegatives
+        #     @. area[1][@. area[1] < eps() ] = eps()
+        # end
 
         # plot!(p, 0:(length(fc)-1), fc,
         plot!(p, fc,
