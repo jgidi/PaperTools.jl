@@ -24,6 +24,7 @@ first_order = OrderedDict(
 second_order = OrderedDict(
     "SPSA" => fake_data(50, 10),
     "CSPSA" => fake_data(50, 10),
+    ""      => nothing,                  # Empty place. For ordering purposes.
     "CSPSA scalar" => fake_data(50, 10),
 )
 
@@ -37,6 +38,10 @@ quantum_natural = OrderedDict(
 
 # You HAVE to pass the array of labels to show in the unified legend
 # Make sure they correspond in order to the optimizers on each OrderedDict
+#
+# For example: Notice that the third element of 'second order' is empty,
+# so that the next entry, "CSPSA scalar", is on the fourth place
+# matching the ordering in "quantum_natural" and on the labels defined below.
 labels = ["SPSA", "CSPSA", "SPSA scalar", "CSPSA scalar"]
 
 # 'estimator' may be:
