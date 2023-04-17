@@ -86,6 +86,13 @@ function optimizersplot(data_dicts...;
         for col in 1:Ncols
             optim = 1
             for (key, data) in data_dicts[row, col]
+
+                # Skip if data is nothing
+                if isnothing(data)
+                    optim += 1
+                    continue
+                end
+
                 center, area = get_statistics(data,
                                               estimators[row],
                                               symmetric_std)
