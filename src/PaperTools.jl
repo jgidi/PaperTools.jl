@@ -1,13 +1,8 @@
 module PaperTools
 
-using Plots
-using Colors: distinguishable_colors
-using Statistics
-
-function __init__()
-    pyplot()                    # Load PyPlot backend for Plots
-end
-
+using PyPlot
+using Colors: distinguishable_colors, red, green, blue, RGB
+using Statistics: mean, std, median, quantile
 
 include("include/optimizersplot.jl")
 
