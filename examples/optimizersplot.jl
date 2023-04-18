@@ -1,8 +1,6 @@
 using PaperTools
 using PyPlot
 
-using OrderedCollections
-
 # We use OrderedDict's to plot in the same order the
 # values are defined.
 # The data must be a matrix with shape (Niterations, Nruns)
@@ -16,21 +14,20 @@ function fake_data(Niters, Nruns, decay_rate=:random)
 end
 
 
-first_order = OrderedDict(
-    "SPSA" => fake_data(50, 10),
+first_order = Dict(
+    "SPSA"  => fake_data(50, 10),
     "CSPSA" => fake_data(50, 10),
 )
 
-second_order = OrderedDict(
-    "SPSA" => fake_data(50, 10),
-    "CSPSA" => fake_data(50, 10),
-    ""      => nothing,                  # Empty place. For ordering purposes.
+second_order = Dict(
+    "SPSA"  => fake_data(50, 10),
+    "CSPSA" => fake_data(50, 105),
     "CSPSA scalar" => fake_data(50, 10),
 )
 
-quantum_natural = OrderedDict(
+quantum_natural = Dict(
     "SPSA" => fake_data(50, 10),
-    "CSPSA" => fake_data(50, 10),
+    "CSPSA full" => fake_data(50, 10),
     "SPSA scalar" => fake_data(50, 10),
     "CSPSA scalar" => fake_data(50, 10),
 )
