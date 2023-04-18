@@ -34,15 +34,14 @@ function optimizersplot(data_dicts...;
                         xlabel = "Iterations",
                         ylabel = "Cost",
                         titles = ["First order", "Second order", "Quantum Natural"],
-                        labels = ["SPSA", "CSPSA"],
                         symmetric_std = false,
                         figsize = :default, # Tuple of reals,
                         xlims = :default,
                         ylims = :default,
-                        gridalpha = 0.3,
-                        fillalpha = 0.3,
                         yscale = :default,
                         xscale = :default,
+                        gridalpha = 0.3,
+                        fillalpha = 0.3,
                         )
 
 
@@ -55,9 +54,6 @@ function optimizersplot(data_dicts...;
 
     Ncols = length(data_dicts)
     Nrows = length(estimators)
-
-    Noptimizers, indmax = findmax(length.(data_dicts))
-    labels_dict = keys(data_dicts[indmax]) |> collect
 
     # Turn data_dicts into a Matrix
     data_dicts = repeat(reshape(data_dicts, 1, :), Nrows)
@@ -76,51 +72,43 @@ function optimizersplot(data_dicts...;
     fig.set_figwidth(figsize[1]/100)
     fig.set_figheight(figsize[2]/100)
 
+    # Gather all unique labels
+    labels = vcat(collect.(keys.(data_dicts))...)
+    labels = sort(unique(labels), by=length)
+
     # Prepare colors
     seed = [RGB(1, 1, 1)] # Avoid colors close to white
-    colors = distinguishable_colors(Noptimizers, seed, dropseed=true)
-    colors = map(c->(red(c), green(c), blue(c)), colors)
+    all_colors = distinguishable_colors(length(labels), seed, dropseed=true)
+    all_colors = map(c->(red(c), green(c), blue(c)), all_colors)
 
-    lines = Array{Any}(undef, Noptimizers)
+    lines = Dict()
+    colors = Dict(zip(labels, all_colors))
     for row in 1:Nrows
         for col in 1:Ncols
-            optim = 1
             for (key, data) in data_dicts[row, col]
-
-                # Skip if data is nothing
-                if isnothing(data)
-                    optim += 1
-                    continue
-                end
 
                 center, area = get_statistics(data,
                                               estimators[row],
                                               symmetric_std)
 
                 iters = 0:(length(center)-1)
-                if !occursin(labels_dict[optim], key)
-                    msg =  "Are you sure that the labels are in "
-                    msg *= "the same order than the provided data?"
-                    @warn msg
-                    @show key labels[optim]
-                end
-                lines[optim] = (
+
+                lines[key] = (
                     # Solid line
                     ax[row, col].plot(iters, center,
-                                      color = colors[optim],
+                                      color = colors[key],
                                       label = key)[],
                     # Shade
                     ax[row, col].fill_between(iters,
                                               area[1], area[2],
-                                              color = colors[optim],
+                                              color = colors[key],
                                               alpha = fillalpha)
                 )
-                optim += 1
             end
         end
     end
 
-    ## Formatting
+    # ===== From here it is just Formatting & Style
 
     # Shared axes
     # x
@@ -160,7 +148,6 @@ function optimizersplot(data_dicts...;
 
     # Set ylims
     if ylims != :default
-        @show ylims
         [ax.set_ylim(ylims...) for ax in ax[:, 1]]
     end
 
@@ -184,13 +171,13 @@ function optimizersplot(data_dicts...;
     end
 
     # Unique legend for all subplots
-    fig.legend(lines,
+    markers = [lines[l] for l in labels]
+    fig.legend(markers,
                labels,
-               ncol=Noptimizers,
-               loc="lower center",
+               ncol = length(labels),
+               loc = "lower center",
                # loc="upper center",
                frameon = false,
-               # fontsize = 12,
                )
 
     shift = 0.07
@@ -199,6 +186,3 @@ function optimizersplot(data_dicts...;
 
     return fig, ax
 end
-# plt.savefig("fig.png")
-# plt.savefig("fig.pdf")
-# plt.show()
