@@ -1,11 +1,6 @@
 using PaperTools
 using PyPlot
 
-# We use OrderedDict's to plot in the same order the
-# values are defined.
-# The data must be a matrix with shape (Niterations, Nruns)
-
-
 # Make up some data to plot
 function fake_data(Niters, Nruns, decay_rate=:random)
     decay_rate == :random && (decay_rate = 0.1rand())
@@ -18,6 +13,8 @@ end
 # grouped in a single color and name depending on their key in the dictionary.
 # That is, all curves with the key "SPSA" will be plotted with the same color,
 # and the same holds for other labels.
+
+# The data must be a matrix with shape (Niterations, Nruns)
 
 first_order = Dict(
     "SPSA"  => fake_data(50, 10),
