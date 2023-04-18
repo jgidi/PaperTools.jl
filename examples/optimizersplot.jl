@@ -9,8 +9,8 @@ using OrderedCollections
 
 
 # Make up some data to plot
-function fake_data(Niters, Nruns)
-    decay_rate = 0.1rand()
+function fake_data(Niters, Nruns, decay_rate=:random)
+    decay_rate == :random && (decay_rate = 0.1rand())
     random_data = 0.4rand(Niters, Nruns)
     return exp.(random_data .- decay_rate*(1:Niters))
 end
